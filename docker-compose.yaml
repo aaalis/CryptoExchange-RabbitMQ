@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  orderdb:
+    image: postgres:14.5
+    container_name: orderdb
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: orderDB
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Services/Orders/dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres_data:
