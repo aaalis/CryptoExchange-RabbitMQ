@@ -5,8 +5,8 @@ namespace Orders.Model
 {
     public class Order
     {   
-        [JsonPropertyName("ID")]
-        public int ID { get; set; }
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
         public string OwnerGuid { get; set; }
 
@@ -42,7 +42,7 @@ namespace Orders.Model
                      Currency order_baseCurrency, 
                      Currency order_quoteCurrency)
         {
-            this.ID = order_id;
+            this.Id = order_id;
             this.OwnerGuid = order_ownerguid;
             this.Kind = order_kind;
             this.Count = order_count;

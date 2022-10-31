@@ -19,13 +19,19 @@ namespace Orders.Model
         {
             modelBuilder.Entity<Order>().ToTable("orders");
             
-            modelBuilder.Entity<Order>().HasKey(x=>x.ID);
-            
+            // modelBuilder.Entity<Order>().HasKey(x=>x.ID);
+
+
+            modelBuilder.Entity<Order>().Property(x => x.Id).HasColumnName("id");
+            modelBuilder.Entity<Order>().HasKey(x => x.Id);
+            modelBuilder.Entity<Order>().Property(x => x.OwnerGuid).HasColumnName("ownerguid");
             modelBuilder.HasPostgresEnum<OrderKind>();
+            modelBuilder.Entity<Order>().Property<OrderKind>(x => x.Kind).HasColumnName("kind");
+            modelBuilder.Entity<Order>().Property(x => x.Count).HasColumnName("count");
+            modelBuilder.Entity<Order>().Property(x => x.Price).HasColumnName("price");
             modelBuilder.HasPostgresEnum<Currency>();
-            modelBuilder.Entity<Order>().Property<OrderKind>("order_kind");
-            modelBuilder.Entity<Order>().Property<Currency>("order_basecurrency");
-            modelBuilder.Entity<Order>().Property<Currency>("order_quotecurrency");
+            modelBuilder.Entity<Order>().Property<Currency>(x => x.BaseCurrency).HasColumnName("basecurrency");
+            modelBuilder.Entity<Order>().Property<Currency>(x => x.QuoteCurrency).HasColumnName("quotecurrency");
 
             base.OnModelCreating(modelBuilder);
         }
