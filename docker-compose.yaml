@@ -13,7 +13,7 @@ services:
       POSTGRES_DB: orderDB
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./Services/Orders/dbscripts/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./Services/Orders/dbscripts/seed2.sql:/docker-entrypoint-initdb.d/seed.sql
 
   adminer:
     image: adminer:4.8.1
