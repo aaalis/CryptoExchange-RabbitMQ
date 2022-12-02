@@ -3,17 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore;
 using Npgsql;
 using Orders.Model;
+using Orders.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<Currency>("OrdersCurrency");
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<OrdersCurrency>("OrdersCurrency");
 Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<OrderKind>("OrdersKind");
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<OrderDbContext>

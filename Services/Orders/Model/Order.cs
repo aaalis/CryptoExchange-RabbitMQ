@@ -5,50 +5,59 @@ namespace Orders.Model
 {
     public class Order
     {   
-        [JsonPropertyName("id")]
+        //[JsonIgnore]
         public int Id { get; set; }
 
         public string OwnerGuid { get; set; }
 
-        [JsonIgnore]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public OrderKind Kind { get; set; }
-        [JsonPropertyName("Kind")]
-        public string KindString {get => Kind.ToString(); }
         
         public int Count { get; set; }
         
         public decimal Price { get; set; }
         
-        [JsonIgnore]
-        public Currency BaseCurrency { get; set; }
-        [JsonPropertyName("BaseCurrency")]
-        public string BaseCurrencyString { get => BaseCurrency.ToString(); }
-        
-        [JsonIgnore]
-        public Currency QuoteCurrency { get; set; }
-        [JsonPropertyName("QuoteCurrency")]
-        public string QuoteCurrencyString { get => QuoteCurrency.ToString(); }
+        [JsonConverter(typeof(JsonStringEnumConverter))]           
+        public OrdersCurrency BaseCurrency { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public OrdersCurrency QuoteCurrency { get; set; }
 
         public Order()
         {
             
         }
 
-        public Order(int order_id, 
-                     string order_ownerguid, 
-                     OrderKind order_kind,
-                     int order_count, 
-                     decimal order_price, 
-                     Currency order_baseCurrency, 
-                     Currency order_quoteCurrency)
+        public Order(int id, 
+                     string ownerguid, 
+                     OrderKind kind,
+                     int count, 
+                     decimal price, 
+                     OrdersCurrency basecurrency, 
+                     OrdersCurrency quotecurrency)
         {
-            this.Id = order_id;
-            this.OwnerGuid = order_ownerguid;
-            this.Kind = order_kind;
-            this.Count = order_count;
-            this.Price = order_price;
-            this.BaseCurrency = order_baseCurrency;
-            this.QuoteCurrency = order_quoteCurrency;
+            this.Id = id;
+            this.OwnerGuid = ownerguid;
+            this.Kind = kind;
+            this.Count = count;
+            this.Price = price;
+            this.BaseCurrency = basecurrency;
+            this.QuoteCurrency = quotecurrency;
+        }
+
+        public Order(string ownerguid, 
+                     OrderKind kind,
+                     int count, 
+                     decimal price, 
+                     OrdersCurrency basecurrency, 
+                     OrdersCurrency quotecurrency)
+        {
+            this.OwnerGuid = ownerguid;
+            this.Kind = kind;
+            this.Count = count;
+            this.Price = price;
+            this.BaseCurrency = basecurrency;
+            this.QuoteCurrency = quotecurrency;
         }
     }
 }
