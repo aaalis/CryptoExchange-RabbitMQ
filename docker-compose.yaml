@@ -15,11 +15,25 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./Services/Orders/dbscripts/seed2.sql:/docker-entrypoint-initdb.d/seed.sql
 
+  orders:
+    image: ${DOCKER_REGISTRY-}orders
+    container_name: orders
+    build:
+      context: .
+      dockerfile: Services/Orders/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionString:DefaultConnection=Server=localhost;Port=5432;Username=postgres;Password=postgres;Database=orderDB"
+    depends_on:
+      - orderdb
+    ports:
+      - 8080:80
+
   adminer:
     image: adminer:4.8.1
     restart: unless-stopped
     ports:
-      - 8080:8080
+      - 8081:8080
 
 volumes:
   postgres_data:

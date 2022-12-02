@@ -27,3 +27,10 @@ INSERT INTO orders(ownerguid, kind, count, price, basecurrency, quotecurrency) V
 INSERT INTO orders(ownerguid, kind, count, price, basecurrency, quotecurrency) VALUES ('test3', 'Buy', 2, 22.0, 'DASH', 'ETH');
 INSERT INTO orders(ownerguid, kind, count, price, basecurrency, quotecurrency) VALUES ('test3', 'Sell', 3, 33.0, 'DASH', 'ETH');
 INSERT INTO orders(ownerguid, kind, count, price, basecurrency, quotecurrency) VALUES ('test3', 'Sell', 4, 44.0, 'DASH', 'ETH');
+
+CREATE TABLE rateCurrency
+(
+    currency OrdersCurrency,
+    dateTime timestamp without time zone,
+    price DECIMAL  
+);

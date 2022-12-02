@@ -69,10 +69,10 @@ namespace Orders.Controllers
             return CreatedAtAction(nameof(GetOrderById), new {id = order.Id}, order);
         }
 
-        [HttpGet("[action]/{}")]
+        [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<IEnumerable<Order>>> GetMatchingOrders([FromBody] OrdersFilter filter) 
+        public async Task<ActionResult<IEnumerable<Order>>> GetMatchingOrders([FromQuery] OrdersFilter filter) 
         {
             if (filter.Limit == 0)
             {
@@ -81,6 +81,7 @@ namespace Orders.Controllers
             }
             
             var orders = await _orderRepository.GetMatch(filter);
+            
             if (!orders.Any())
             {
                 _logger.LogInformation($"Matching orders not found with filter:{filter.ToString()}");
