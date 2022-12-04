@@ -23,7 +23,7 @@ services:
       dockerfile: Services/Orders/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionString:DefaultConnection=Server=localhost;Port=5432;Username=postgres;Password=postgres;Database=orderDB"
+      - "ConnectionStrings:DefaultConnection=Server=orderdb;Port=5432;Username=postgres;Password=postgres;Database=orderDB"
     depends_on:
       - orderdb
     ports:

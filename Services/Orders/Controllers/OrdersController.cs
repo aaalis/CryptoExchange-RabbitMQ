@@ -33,15 +33,15 @@ namespace Orders.Controllers
         }
 
         [HttpGet("[action]/{id}")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Order>> GetOrderById(int id) 
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Order), (int)HttpStatusCode.Conflict)]
+        public async Task<ActionResult<object>> GetOrderById(int id) 
         {
             var order = await _orderRepository.GetOrderById(id);
             if (order == null)
             {
                 _logger.LogError($"Order with id:{id} not found");
-                return NotFound($"Order with id:{id} not found");                
+                return NotFound($"Order with id:{id} not found");      
             }
             return Ok(order);
         }
