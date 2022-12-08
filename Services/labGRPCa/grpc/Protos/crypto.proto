@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+option csharp_namespace = "labGRPCa";
+
+package cryptoService;
+
+service CryptoGrpcService {
+  rpc GetCurrencyChangesStream (ChangesRequest) returns (stream ChangesReply);
+  rpc AddCurrencyChangesStream (stream  SingleCurrency) returns (ResponseMessage);
+  rpc GetAllChanges (AllCurrencyRequest) returns (AllChangesReply);
+  rpc AddCurrencyRate (SingleCurrency) returns (ResponseMessage);
+}
+
+message ResponseMessage {
+	string content = 1;
+}
+
+
+message AllCurrencyRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  string dateFrom = 3;
+  string dateTo = 4;
+  double priceFrom = 5;
+  double priceTo = 6;
+  repeated string actions = 7;
+}
+
+message SingleCurrency {
+  string currencyName = 1;
+  string action = 2;
+  string date = 3;
+  double price = 4;
+}
+
+message ChangesRequest {
+  string currencyName = 1;
+  string dateFrom = 2;
+  string dateTo = 3;
+}
+
+message ChangesReply {
+  int64 changeId = 1;
+  SingleCurrency currency = 2;
+}
+
+message Meta{
+  int32 total = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message AllChangesReply {
+  repeated ChangesReply data = 1;
+  Meta meta = 2;
+}
