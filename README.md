@@ -1,5 +1,10 @@
 # CryptoExchange
 
+## Для запуска необходимо:
+### git clone https://github.com/aaalis/CryptoExchange
+### cd CryptoExchange
+### docker-compose up
+
 Концепция(./Concept) - Концептия проекта
 
 REST(/Services/Orders) - Сервис для работы с ордерами
