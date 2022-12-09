@@ -12,7 +12,7 @@ docker-compose up
 Orders(./Services/Orders) - REST Сервис для работы с ордерами
 http://localhost:8080/swagger/index.html
 
-Rate (./Services/Rate) - gRPC Сервис для работой с котировками валюты
+Rate(./Services/Rate) - gRPC Сервис для работой с котировками валюты
 http://localhost:8081
 Для тестирования нужно прописать dotnet run, находясь в /Services/Rate/gRPC_Client
 
