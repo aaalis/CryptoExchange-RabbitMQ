@@ -1,7 +1,9 @@
 # CryptoExchange
 ## Для запуска необходимо:
 git clone https://github.com/aaalis/CryptoExchange
+
 cd CryptoExchange
+
 docker-compose up
 
 ## Описание
