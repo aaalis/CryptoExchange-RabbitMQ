@@ -10,7 +10,6 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      POSTGRES_DB: DB
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./dbseed/seed3.sql:/docker-entrypoint-initdb.d/seed.sql

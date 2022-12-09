@@ -1,3 +1,5 @@
+CREATE DATABASE "DB";
+
 \connect DB
 
 CREATE TYPE OrdersKind AS ENUM ('Buy', 'Sell');

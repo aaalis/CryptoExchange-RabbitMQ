@@ -9,4 +9,6 @@ gRPC(./Services/Rate) - Сервис для работой с котировка
 http://localhost:8081
 Для тестирования нужно прописать dotnet run, находясь в /Services/Rate/gRPC_Client
 
+Adminer - http://localhost:8088
+
 Брокер сообщений(./MessageBroker) - Доклад Kafka
