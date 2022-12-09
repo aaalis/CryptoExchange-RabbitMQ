@@ -9,7 +9,7 @@ docker-compose up
 ## Описание
 Концепция(./Concept) - Концептия проекта
 
-REST(/Services/Orders) - Сервис для работы с ордерами
+REST(./Services/Orders) - Сервис для работы с ордерами
 http://localhost:8080/swagger/index.html
 
 gRPC(./Services/Rate) - Сервис для работой с котировками валюты
