@@ -1,4 +1,4 @@
-﻿namespace labGRPCa.Model
+﻿namespace gRPC_Server.Model
 {
     public class RateFilter
     {

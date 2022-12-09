@@ -1,6 +1,6 @@
-using labGRPCa.Model;
-using labGRPCa.Repositories;
-using labGRPCa.Services;
+using gRPC_Server.Model;
+using gRPC_Server.Repositories;
+using gRPC_Server.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

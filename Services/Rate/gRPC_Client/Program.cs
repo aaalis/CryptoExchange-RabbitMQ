@@ -1,5 +1,5 @@
 using Grpc.Net.Client;
-using labGRPCaClient;
+using gRPC_Client;
 
 Action<ChangesReply> displayChangesReply = cr =>
 {
@@ -13,12 +13,14 @@ Action<ChangesReply> displayChangesReply = cr =>
 
 Func<SingleCurrency> getCurrency = () =>
 {
-    Console.Write("currencyName: ");
+    Console.Write("Currency (BTC, ETH, DASH): ");
     var currencyName = Console.ReadLine();
-    Console.Write("action: ");
+    
+    Console.Write("action (UP, DOWN): ");
     var action = Console.ReadLine();
-    Console.Write("date: ");
-    var date = DateTime.Parse(Console.ReadLine());
+    
+    string date = DateTime.Now.ToString();
+    
     Console.Write("price: ");
     var price = decimal.Parse(Console.ReadLine());
 
@@ -26,7 +28,7 @@ Func<SingleCurrency> getCurrency = () =>
     {
         CurrencyName = currencyName,
         Action = action,
-        Date = date.ToString(),
+        Date = date,
         Price = (double)price
     };
 
@@ -44,19 +46,19 @@ var client = new CryptoGrpcService.CryptoGrpcServiceClient(channel);
 while (true)
 {
     Console.WriteLine();
-    Console.WriteLine(@"Функции gRPC сервиса:
+    Console.WriteLine(@"Р¤СѓРЅРєС†РёРё gRPC СЃРµСЂРІРёСЃР°:
         0: Exit
         1: GetAllChanges
         2: AddCurrencyRate
         3: GetCurrencyChangesStream
         4: AddCurrencyChangesStream");
 
-    Console.Write("Выбор: ");
-    var chois = int.Parse(Console.ReadLine());
+    Console.Write("Р’С‹Р±РѕСЂ: ");
+    var choice = int.Parse(Console.ReadLine());
 
     Console.WriteLine();
 
-    switch (chois)
+    switch (choice)
     {
         case 0:
             Environment.Exit(0);
@@ -92,7 +94,7 @@ while (true)
 
             break;
         case 4:
-            Console.Write("Кол-во элементов: ");
+            Console.Write("РљРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ: ");
             var elemsCount = int.Parse(Console.ReadLine());
 
             var addStream = client.AddCurrencyChangesStream();

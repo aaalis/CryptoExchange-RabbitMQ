@@ -1,6 +1,6 @@
-﻿using labGRPCa.Model;
+﻿using gRPC_Server.Model;
 
-namespace labGRPCa.Repositories
+namespace gRPC_Server.Repositories
 {
     public interface IRateRepository
     {

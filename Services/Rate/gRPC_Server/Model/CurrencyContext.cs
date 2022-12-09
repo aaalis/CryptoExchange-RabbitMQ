@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace labGRPCa.Model
+namespace gRPC_Server.Model
 {
     public class CurrencyContext : DbContext
     {

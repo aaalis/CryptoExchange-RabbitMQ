@@ -1,4 +1,4 @@
-\connect orderDB
+\connect DB
 
 CREATE TYPE OrdersKind AS ENUM ('Buy', 'Sell');
 
@@ -37,5 +37,16 @@ CREATE TABLE currancy_rate
     date_of_change TIMESTAMP,
     currency OrdersCurrency,
     price DECIMAL
-
 );
+
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-08 04:05:06', 'BTC', 2000.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('DOWN', '1999-01-09 04:05:06', 'BTC', 1900.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-10 04:05:06', 'BTC', 1950.0);
+
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-08 04:05:06', 'ETH', 500.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('DOWN', '1999-01-09 04:05:06', 'ETH', 450.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-10 04:05:06', 'BTC', 490.0);
+
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-08 04:05:06', 'DASH', 100.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('DOWN', '1999-01-09 04:05:06', 'DASH', 90.0);
+INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-10 04:05:06', 'DASH', 95.0);

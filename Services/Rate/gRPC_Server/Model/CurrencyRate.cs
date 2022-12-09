@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace labGRPCa.Model
+namespace gRPC_Server.Model
 {
     public class CurrencyRate
     {

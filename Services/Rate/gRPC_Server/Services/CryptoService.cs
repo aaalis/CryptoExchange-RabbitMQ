@@ -1,11 +1,11 @@
 using Google.Protobuf;
 using Grpc.Core;
-using labGRPCa;
-using labGRPCa.Model;
-using labGRPCa.Repositories;
+using gRPC_Server;
+using gRPC_Server.Model;
+using gRPC_Server.Repositories;
 using System;
 
-namespace labGRPCa.Services
+namespace gRPC_Server.Services
 {
     public class CryptoService : CryptoGrpcService.CryptoGrpcServiceBase
     {

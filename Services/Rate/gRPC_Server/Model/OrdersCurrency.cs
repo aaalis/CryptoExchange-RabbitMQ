@@ -1,7 +1,7 @@
 ﻿using NpgsqlTypes;
 using System.Text.Json.Serialization;
 
-namespace labGRPCa.Model
+namespace gRPC_Server.Model
 {
     [PgName("orderscurrency")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

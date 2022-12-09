@@ -1,7 +1,7 @@
-﻿using labGRPCa.Model;
+﻿using gRPC_Server.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace labGRPCa.Repositories
+namespace gRPC_Server.Repositories
 {
     public class RateRepository : IRateRepository
     {
