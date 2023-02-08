@@ -30,6 +30,7 @@ services:
 
   rate:
     image: ${DOCKER_REGISTRY-}rategrpc
+    container_name: rate
     build:
       context: .
       dockerfile: Services/Rate/gRPC_Server/Dockerfile

@@ -52,3 +52,15 @@ INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALU
 INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-08 04:05:06', 'DASH', 100.0);
 INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('DOWN', '1999-01-09 04:05:06', 'DASH', 90.0);
 INSERT INTO currancy_rate(back_ref_action, date_of_change, currency, price) VALUES ('UP', '1999-01-10 04:05:06', 'DASH', 95.0);
+
+CREATE TABLE users
+(
+    id serial PRIMARY KEY,
+    name VARCHAR(50),
+    login VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    creationDate TIMESTAMP WITHOUT TIME ZONE,
+    isDeleted BOOLEAN DEFAULT FALSE NOT NULL
+);
+
+INSERT INTO users(name, login, password, creationDate, isDeleted) VALUES ('TestName1', 'TestLogin1', 'TestPassword1', '2022-01-01 01:01:01', false);
