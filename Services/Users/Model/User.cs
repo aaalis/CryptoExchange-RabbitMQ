@@ -15,7 +15,7 @@ namespace Users.Model
         public string Password { get; set; }
 
         [JsonIgnore]
-        public DateTime CreationDateTime { get; set; } = DateTime.Now.ToUniversalTime();
+        public DateTime CreationDateTime {get;set;} = DateTime.Now.ToUniversalTime();
 
         [JsonIgnore]
         public bool IsDeleted { get ; set; } = false;
@@ -24,6 +24,13 @@ namespace Users.Model
         {
             Login = login;
             Password = password;   
+        }
+
+        public void ChangeData(User dataUser)
+        {
+            this.Login = dataUser.Login;
+            this.Name = dataUser.Name;
+            this.Password = dataUser.Password;
         }
     }
 }

@@ -59,7 +59,7 @@ CREATE TABLE users
     name VARCHAR(50),
     login VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
-    creationDate TIMESTAMP WITHOUT TIME ZONE,
+    creationDate TIMESTAMP,
     isDeleted BOOLEAN DEFAULT FALSE NOT NULL
 );
 

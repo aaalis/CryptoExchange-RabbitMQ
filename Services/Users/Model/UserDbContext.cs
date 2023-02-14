@@ -6,7 +6,7 @@ namespace Users.Model
     {
         public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
         {
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public DbSet<User> Users {get;set;}
