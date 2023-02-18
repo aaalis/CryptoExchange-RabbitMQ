@@ -95,7 +95,7 @@ namespace Users.Controllers
             return Ok(await _userService.UpdateUser(id, user));
         }
 
-        [HttpPut("{id}&{name}")]
+        [HttpPatch("{id}&{name}")]
         public async Task<ActionResult<UserDto>> UpdateUserName(int id, string name)
         {
             UserDto user = await _userService.UpdateUserName(id, name);

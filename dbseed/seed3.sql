@@ -64,3 +64,43 @@ CREATE TABLE users
 );
 
 INSERT INTO users(name, login, password, creationDate, isDeleted) VALUES ('TestName1', 'TestLogin1', 'TestPassword1', '2022-01-01 01:01:01', false);
+
+CREATE TABLE portfolio
+(
+    id serial PRIMARY KEY,
+    "userId" INTEGER,
+    CONSTRAINT "userId_id" FOREIGN KEY ("userId")
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+INSERT INTO portfolio("userId") VALUES (1);
+
+CREATE TABLE tempcurrency
+(
+    id serial PRIMARY KEY,
+    currency VARCHAR(50) NOT NULL
+);
+
+INSERT INTO tempcurrency(currency) VALUES ('BTC');
+INSERT INTO tempcurrency(currency) VALUES ('ETH');
+INSERT INTO tempcurrency(currency) VALUES ('DASH');
+
+CREATE TABLE assets
+(
+    id serial PRIMARY KEY,
+    "portfolioId" INTEGER,
+    amount DECIMAL,
+    "currencyId" INTEGER,
+    CONSTRAINT "portfolioId_id" FOREIGN KEY ("portfolioId")
+        REFERENCES public.portfolio (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT "currencyId_id" FOREIGN KEY ("currencyId")
+        REFERENCES public.tempcurrency (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+INSERT INTO assets("portfolioId", amount, "currencyId") VALUES(1, 20, 2);
