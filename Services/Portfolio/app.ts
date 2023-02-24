@@ -7,18 +7,8 @@ import cors from 'cors';
 import {CommonRoutesConfig} from './common/common.routes.config';
 import {PortfolioRoutes} from './routes/portfolio.routes';
 import debug from 'debug';
-
-import { Sequelize } from 'sequelize';
+import connection from './connection';
 import { initModels } from './models/init-models';
-import { Asset } from './models/asset';
-
-const sequelize: Sequelize = new Sequelize('DB', 'postgres', 'postgres', {
-    host: 'localhost',
-    dialect: 'postgres'
-});
-
-initModels(sequelize);
-const assets = await Asset.findAll();
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -49,12 +39,22 @@ routes.push(new PortfolioRoutes(app));
 
 const runningMessage = `Server running at http://localhost:${port}`;
 app.get('/', (req: express.Request, res: express.Response) => {
-    res.status(200).send(runningMessage + assets)
+    res.status(200).send(runningMessage)
 });
 
-server.listen(port, () => {
-    routes.forEach((route: CommonRoutesConfig) => {
-        debugLog(`Routes configured for ${route.getName()}`);
-    });
-    console.log(runningMessage);
-});
+initModels(connection);
+
+const start = async () => {
+    try {
+        server.listen(port, () => {
+            routes.forEach((route: CommonRoutesConfig) => {
+                debugLog(`Routes configured for ${route.getName()}`);
+            });
+            console.log(runningMessage);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+void start();
