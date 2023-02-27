@@ -1,5 +1,6 @@
 import debug from 'debug';
 import express from 'express';
+import { Asset } from '../models/asset';
 import { Portfolio } from '../models/portfolio';
 import portfolioService from '../services/portfolio.service';
 
@@ -9,6 +10,11 @@ class PortfolioController {
     async createPortfolio(req: express.Request, res:express.Response) {
         const portfolio: Portfolio = await portfolioService.createPortfolio(Number(req.params.userId));
         res.status(201).json(portfolio);
+    }
+
+    async addAssets(req: express.Request, res:express.Response) {
+        const asset: Asset = await portfolioService.addAssets(req.body);
+        res.status(201).json(asset);
     }
 }
 

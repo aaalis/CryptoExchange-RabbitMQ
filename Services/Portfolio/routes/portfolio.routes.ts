@@ -11,13 +11,19 @@ export class PortfolioRoutes extends CommonRoutesConfig {
 
     configureRoutes(): express.Application {
 
+        this.app.route(`/portfolio/addAssets`)
+                .put(
+                    //middleware
+                    portfolioContoller.addAssets
+                );
+        
         this.app.param(`userId`, portfolioMiddleware.extractUserId)
         this.app.route(`/portfolio/:userId`)
-            .post(
-                portfolioMiddleware.validateRequiredField,
-                portfolioMiddleware.validateUserExist,
-                portfolioContoller.createPortfolio
-            );
+                .post(
+                    portfolioMiddleware.validateRequiredField,
+                    portfolioMiddleware.validateUserExist,
+                    portfolioContoller.createPortfolio
+                );
         
         return this.app;
     }

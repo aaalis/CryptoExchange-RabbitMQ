@@ -1,5 +1,6 @@
 import { Portfolio } from "../models/portfolio";
 import { User } from "../models/user";
+import { Asset } from '../models/asset';
 
 class PortfolioService {
 
@@ -9,6 +10,10 @@ class PortfolioService {
 
     async createPortfolio(userId: number) {
         return await Portfolio.create({userId});
+    }
+
+    async addAssets(asset: Asset) {
+        return await Asset.create({ ...asset });
     }
 }
 

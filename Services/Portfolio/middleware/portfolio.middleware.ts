@@ -28,6 +28,11 @@ class PortfolioMiddleware {
         req.body.id = req.params.userId;
         next();
     }
+
+    async extractPortfolioId(req: express.Request, res: express.Response, next: express.NextFunction) {
+        req.body.id = req.params.portfolioId;
+        next();
+    }
 }
 
 export default new PortfolioMiddleware();
