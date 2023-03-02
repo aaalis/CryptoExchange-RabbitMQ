@@ -9,10 +9,14 @@ import {PortfolioRoutes} from './routes/portfolio.routes';
 import debug from 'debug';
 import connection from './connection';
 import { initModels } from './models/init-models';
+import ApplicationOptions from './appOptions';
+
+
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = 8083;
 const routes: Array<CommonRoutesConfig> = [];
 const debugLog: debug.IDebugger = debug('app');
 
@@ -37,7 +41,14 @@ app.use(expressWinston.logger(loggerOptions));
 
 routes.push(new PortfolioRoutes(app));
 
-const runningMessage = `Server running at http://localhost:${port}`;
+const specs = swaggerJsdoc(ApplicationOptions.options);
+app.use(
+    "/swagger",
+    swaggerUi.serve,
+    swaggerUi.setup(specs)
+  );
+
+const runningMessage = `Server running at http://localhost:${ApplicationOptions.port}`;
 app.get('/', (req: express.Request, res: express.Response) => {
     res.status(200).send(runningMessage)
 });
@@ -46,7 +57,7 @@ initModels(connection);
 
 const start = async () => {
     try {
-        server.listen(port, () => {
+        server.listen(ApplicationOptions.port, () => {
             routes.forEach((route: CommonRoutesConfig) => {
                 debugLog(`Routes configured for ${route.getName()}`);
             });

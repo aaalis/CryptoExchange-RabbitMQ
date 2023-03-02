@@ -62,5 +62,17 @@ services:
     ports:
       - 8088:8080
 
+  #mbroker:
+  #  image: rabbitmq:3.11.9-management
+  #  restart: unless-stopped
+  #  container_name: mbroker
+  #  ports:
+  #    - 5672:5672
+  #    - 15672:15672
+  #  environment:
+  #    AMQP_URL: 'amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+  #   RABBITMQ_DEFAULT_USER: "user1"
+  #    RABBITMQ_DEFAULT_PASS: "user1"
+
 volumes:
   postgres_data:
