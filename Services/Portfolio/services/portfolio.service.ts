@@ -16,7 +16,7 @@ class PortfolioService {
 
     public async getPortfolioById(portfolioId: number) {
         const portfolio: Portfolio | null =  await Portfolio.findByPk(portfolioId, {
-            include: [`assets`],
+            include: { all: true , nested: true}
         });
         return portfolio; 
     }
@@ -26,7 +26,7 @@ class PortfolioService {
             where: {
                 userId: userID
             },
-            include: [`assets`],
+            include: {all: true, nested: true},
         });
         return portfolio;
     }
@@ -68,6 +68,18 @@ class PortfolioService {
         return finded;
     }
 
+    public async deletePortfolio(portfolioID: number) {
+        const portfolio: Portfolio | null = await Portfolio.findByPk(portfolioID, {
+            include: {all: true, nested: true}
+        });
+
+        if (portfolio) {
+            await portfolio.destroy();
+        }
+        
+        return portfolio;
+    }
+
     public async findAsset(portfolioID: number, currencyID: number) {
         return await Asset.findOne({
             where: {
@@ -80,6 +92,7 @@ class PortfolioService {
     private async findAssetByCurrencyId(asset: Asset) {
         return await Asset.findOne({
             where: {
+                portfolioId: asset.portfolioId,
                 currencyId: asset.currencyId
             }
         });

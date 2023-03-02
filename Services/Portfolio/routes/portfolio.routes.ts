@@ -115,15 +115,55 @@ export class PortfolioRoutes extends CommonRoutesConfig {
                 .get(
                     portfolioContoller.getPortfolioById
                 );
-
+                
+        /**
+         * @swagger
+         * /PortfolioAPI/getByUserId/{userId}:
+         *   get:
+         *     summary: Get portfolio by user id.
+         *     parameters:
+         *       - in: path
+         *         name: userId
+         *         required: true
+         *         description: Numeric ID of the user(owner).
+         *         schema:
+         *           type: integer
+         *     responses:
+         *       200:
+         *         description: A single portfolio.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         */
         this.app.route(`/PortfolioAPI/getByUserId/:userId`)
                 .get(
                     portfolioContoller.getPortfolioByUserId
                 )
         
+        /**
+         * @swagger
+         * /PortfolioAPI/delete/{portfolioId}:
+         *   delete:
+         *     summary: Delete portfolio by id.
+         *     parameters:
+         *       - in: path
+         *         name: portfolioId
+         *         required: true
+         *         description: portfolio id
+         *         schema:
+         *           type: integer
+         *     responses:
+         *       200:
+         *         description: Deleted portfolio.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         */
         this.app.route(`/PortfolioAPI/delete/:portfolioId`)
                 .delete(
-
+                    portfolioContoller.deletePortfolioById
                 );
 
         this.app.param(`userId`, portfolioMiddleware.extractUserId)

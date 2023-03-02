@@ -30,6 +30,11 @@ class PortfolioController {
         const portfolio: Portfolio | null = await portfolioService.getPortfolioByUserId(Number(req.params.userId));
         res.status(200).json(portfolio);
     }
+
+    public async deletePortfolioById(req: express.Request, res: express.Response) {
+        const portfolio: Portfolio | null = await portfolioService.deletePortfolio(Number(req.params.portfolioId));
+        res.status(200).json(portfolio);
+    }
 }
 
 export default new PortfolioController();
