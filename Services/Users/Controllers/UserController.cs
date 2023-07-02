@@ -26,11 +26,11 @@ namespace Users.Controllers
             return Ok(userDto);
         }
 
-        [HttpPost]
-        public async Task CreateUsers([FromBody] IEnumerable<User> users)
-        {
-            await _userService.CreateUsers(users);
-        }
+        // [HttpPost]
+        // public async Task CreateUsers([FromBody] IEnumerable<User> users)
+        // {
+        //     await _userService.CreateUsers(users);
+        // }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUserById(int id)

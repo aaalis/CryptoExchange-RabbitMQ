@@ -68,8 +68,23 @@ class PortfolioService {
         return finded;
     }
 
-    public async deletePortfolio(portfolioID: number) {
+    public async deletePortfolioById(portfolioID: number) {
         const portfolio: Portfolio | null = await Portfolio.findByPk(portfolioID, {
+            include: {all: true, nested: true}
+        });
+
+        if (portfolio) {
+            await portfolio.destroy();
+        }
+        
+        return portfolio;
+    }
+
+    public async deletePortfolioByUserId(userID: number) {
+        const portfolio: Portfolio | null = await Portfolio.findOne({
+            where: {
+                userId: userID
+            },
             include: {all: true, nested: true}
         });
 
@@ -97,6 +112,7 @@ class PortfolioService {
             }
         });
     }
+
 }
 
 export default new PortfolioService();

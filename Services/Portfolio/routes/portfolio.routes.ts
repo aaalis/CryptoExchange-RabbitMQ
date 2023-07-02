@@ -143,7 +143,7 @@ export class PortfolioRoutes extends CommonRoutesConfig {
         
         /**
          * @swagger
-         * /PortfolioAPI/delete/{portfolioId}:
+         * /PortfolioAPI/deleteById/{portfolioId}:
          *   delete:
          *     summary: Delete portfolio by id.
          *     parameters:
@@ -161,9 +161,34 @@ export class PortfolioRoutes extends CommonRoutesConfig {
          *             schema:
          *               type: object
          */
-        this.app.route(`/PortfolioAPI/delete/:portfolioId`)
+        this.app.route(`/PortfolioAPI/deleteById/:portfolioId`)
                 .delete(
                     portfolioContoller.deletePortfolioById
+                );
+
+        /**
+         * @swagger
+         * /PortfolioAPI/deleteByUserId/{userId}:
+         *   delete:
+         *     summary: Delete portfolio by user id.
+         *     parameters:
+         *       - in: path
+         *         name: userId
+         *         required: true
+         *         description: user id
+         *         schema:
+         *           type: integer
+         *     responses:
+         *       200:
+         *         description: Deleted portfolio.
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         */
+        this.app.route(`/PortfolioAPI/deleteByUserId/:portfolioId`)
+                .delete(
+                    portfolioContoller.deletePortfolioByUserId
                 );
 
         this.app.param(`userId`, portfolioMiddleware.extractUserId)

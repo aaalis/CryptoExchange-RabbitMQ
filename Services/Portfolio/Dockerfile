@@ -1,14 +1,24 @@
-FROM node:18.14
+FROM node:18.14 As base
 
-RUN mkdir -p /usr/src/app
+RUN npm i -g pnpm
 
-WORKDIR /usr/src/app
+FROM base AS dependencies
+WORKDIR /app
+COPY package.json ./
+RUN pnpm install
 
-COPY package.json /usr/src/app
+FROM base as build
+WORKDIR /app
+COPY . .
+COPY --from=dependencies /app/node_modules ./node_modules
+RUN pnpm build
+RUN pnpm prune --prod
 
-RUN npm install
+FROM base as deploy
 
-COPY . /usr/src/app
+WORKDIR /app
+COPY --from=build /app/dist/ ./dist/
+COPY --from=build /app/node_modules ./node_modules
 
 EXPOSE 8083
 

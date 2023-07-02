@@ -32,7 +32,12 @@ class PortfolioController {
     }
 
     public async deletePortfolioById(req: express.Request, res: express.Response) {
-        const portfolio: Portfolio | null = await portfolioService.deletePortfolio(Number(req.params.portfolioId));
+        const portfolio: Portfolio | null = await portfolioService.deletePortfolioById(Number(req.params.portfolioId));
+        res.status(200).json(portfolio);
+    }
+
+    public async deletePortfolioByUserId(req: express.Request, res: express.Response) {
+        const portfolio: Portfolio | null = await portfolioService.deletePortfolioByUserId(Number(req.params.portfolioId));
         res.status(200).json(portfolio);
     }
 }

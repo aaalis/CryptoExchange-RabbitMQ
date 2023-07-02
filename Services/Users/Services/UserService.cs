@@ -2,21 +2,29 @@ using Users.Model;
 using Users.Repositories;
 using Users.Model.Dto;
 using System.Linq;
+using Rabbit;
 
 namespace Users.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IClient _rabbitClient;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IClient rabbitClient)
         {
             _userRepository = userRepository;
+            _rabbitClient = rabbitClient;
         }
 
         public async Task<UserDto> CreateUser(User user)
         {
             User newUser = await _userRepository.CreateUser(user);
+            if (newUser != null)
+            {
+                int id = newUser.Id;
+                CreatePortfolio(id);
+            }
             return ConvertUser(newUser);
         }
 
@@ -57,6 +65,7 @@ namespace Users.Services
         public async Task<UserDto> DeleteUser(int id)
         {
             User user = await _userRepository.DeleteUser(id);
+            DeletePortfolio(id);
             return ConvertUser(user);
         }
 
@@ -86,9 +95,14 @@ namespace Users.Services
             return new UserDto(user.Login, user.Name);
         }
 
-        // public async Task<IEnumerable<UserDto>> GetUsers(IEnumerable<int> ids)
-        // {
-        //     _userRepository.;
-        // }
+        private void CreatePortfolio(int id) 
+        {
+            _rabbitClient.CreatePortfolio(id);
+        }
+
+        private void DeletePortfolio(int id) 
+        {
+            _rabbitClient.DeletePortfolio(id);
+        }
     }
 }

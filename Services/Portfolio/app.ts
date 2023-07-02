@@ -10,7 +10,10 @@ import debug from 'debug';
 import connection from './connection';
 import { initModels } from './models/init-models';
 import ApplicationOptions from './appOptions';
+import portfolioService from './services/portfolio.service';
+import amqpConnection from './amqpConnection';
 
+var amqp = require(`amqplib/callback_api`);
 
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -55,6 +58,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 
 initModels(connection);
 
+
 const start = async () => {
     try {
         server.listen(ApplicationOptions.port, () => {
@@ -67,5 +71,33 @@ const start = async () => {
         console.error(error);
     }
 };
+
+// amqp.connect('amqp://localhost', function(error0: any, connection: any) {
+//     if (error0) {
+//         throw error0;
+//     };
+
+//     connection.createChannel(function(error1: any, channel: any) {
+//         if (error1) {
+//             throw error1;
+//         };
+        
+//         var queue = 'createPortfolio';
+
+//         channel.assertQueue(queue, {
+//             durable: false,
+//         });
+
+//         console.log(" [*] Waiting for messages in %s.", queue);
+
+//         channel.consume(queue, function(msg:any) {
+//             console.log(" [x] Received UserId:%s", msg.content.toString());
+//             portfolioService.createPortfolio(msg.content);
+//         },
+//         );
+//     });
+// });
+
+amqpConnection.connect();
 
 void start();

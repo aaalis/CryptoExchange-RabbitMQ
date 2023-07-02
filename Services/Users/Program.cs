@@ -4,6 +4,7 @@ using Npgsql;
 using Users.Model;
 using Users.Repositories;
 using Users.Services;
+using Rabbit;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IClient, RabbitClient>();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<UserDbContext>
 (
