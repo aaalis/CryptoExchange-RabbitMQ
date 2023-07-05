@@ -1,10 +1,11 @@
 import portfolioService from './services/portfolio.service';
 
-var amqp = require(`amqplib/callback_api`);
+const amqp = require(`amqplib/callback_api`);
+const amqpUrl = 'amqp://guest:guest@mbroker:5672' // login:pass@container_name
 
 class AmqpConnection {
     connect() {
-        amqp.connect('amqp://localhost', function(error0: any, connection: any) {
+        amqp.connect( amqpUrl, function(error0: any, connection: any) {
             if (error0) {
                 throw error0;
             };
@@ -33,11 +34,6 @@ class AmqpConnection {
                 })
 
                 console.log("Waiting for messages.");
-
-                // channel.consume(queue, function(msg:any) {
-                //     console.log(" [x] Received UserId:%s", msg.content.toString());
-                //     portfolioService.createPortfolio(msg.content);
-                // });
             });
         });
     }

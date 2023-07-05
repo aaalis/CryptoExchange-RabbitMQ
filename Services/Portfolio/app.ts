@@ -51,7 +51,6 @@ app.use(
     swaggerUi.setup(specs)
   );
 
-const runningMessage = `Server running at http://localhost:${ApplicationOptions.port}`;
 app.get('/', (req: express.Request, res: express.Response) => {
     res.status(200).send(runningMessage)
 });
@@ -72,32 +71,8 @@ const start = async () => {
     }
 };
 
-// amqp.connect('amqp://localhost', function(error0: any, connection: any) {
-//     if (error0) {
-//         throw error0;
-//     };
-
-//     connection.createChannel(function(error1: any, channel: any) {
-//         if (error1) {
-//             throw error1;
-//         };
-        
-//         var queue = 'createPortfolio';
-
-//         channel.assertQueue(queue, {
-//             durable: false,
-//         });
-
-//         console.log(" [*] Waiting for messages in %s.", queue);
-
-//         channel.consume(queue, function(msg:any) {
-//             console.log(" [x] Received UserId:%s", msg.content.toString());
-//             portfolioService.createPortfolio(msg.content);
-//         },
-//         );
-//     });
-// });
-
 amqpConnection.connect();
+
+const runningMessage = `Server running`;
 
 void start();

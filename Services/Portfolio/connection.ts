@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize";
 
 const connection = new Sequelize({
     dialect:"postgres",
-    host:"localhost",
+    host:"db", //CONTAINER_NAME database
     username: "postgres",
     password: "postgres",
     database: "DB",

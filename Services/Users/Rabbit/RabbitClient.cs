@@ -5,7 +5,7 @@ namespace Rabbit
 {
     public class RabbitClient : IClient
     {
-        public string Host { get; } = "localhost";
+        public string Host { get; } = "mbroker";
 
         public string Username { get; } = "user1";
 

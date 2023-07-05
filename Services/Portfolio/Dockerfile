@@ -1,25 +1,31 @@
-FROM node:18.14 As base
+FROM node:18-alpine
 
 RUN npm i -g pnpm
 
-FROM base AS dependencies
 WORKDIR /app
-COPY package.json ./
+
+COPY /Services/Portfolio/package.json /Services/Portfolio/pnpm-lock.yaml ./
+
 RUN pnpm install
 
-FROM base as build
-WORKDIR /app
-COPY . .
-COPY --from=dependencies /app/node_modules ./node_modules
-RUN pnpm build
-RUN pnpm prune --prod
+# RUN npm install
 
-FROM base as deploy
+# FROM base as build
 
-WORKDIR /app
-COPY --from=build /app/dist/ ./dist/
-COPY --from=build /app/node_modules ./node_modules
+# WORKDIR /app
+COPY /Services/Portfolio/. .
+# COPY --from=dependencies /app/node_modules ./node_modules
+# RUN pnpm start
+# RUN pnpm prune --prod
 
-EXPOSE 8083
+# FROM base as deploy
 
-CMD ["npm", "start"]
+# WORKDIR /app
+# COPY --from=build /app/dist/ ./dist/
+# COPY --from=build /app/node_modules ./node_modules
+
+EXPOSE 8083 5672
+
+# CMD ["node", "dist/app.js"]
+
+CMD npm start
