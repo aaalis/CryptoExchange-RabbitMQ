@@ -59,7 +59,7 @@ services:
   portfolio:
     image: ${DOCKER_REGISTRY-}portfolio
     container_name: portfolio
-    restart: always
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Services/Portfolio/Dockerfile
