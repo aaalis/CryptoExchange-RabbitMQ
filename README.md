@@ -1,21 +1,31 @@
-# CryptoExchange
+# CryptoExchange-RabbitMQ
+Серверная часть упрощенной криптобиржи. Попытка построить микросервисную архитектуру.
 ## Для запуска необходимо:
-git clone https://github.com/aaalis/CryptoExchange
+git clone https://github.com/aaalis/CryptoExchange-RabbitMQ
 
-cd CryptoExchange
+cd CryptoExchange-RabbitMQ
 
 docker-compose up
 
+## Стек технологий
+- .NET 6
+- Typescript
+- ASP.NET
+- Express.js
+- PostgreSQL
+- RabbitMQ
 ## Описание
-Концепция(./Concept) - Концептия проекта
+Orders(./Services/Orders) - REST Сервис для работы с ордерами. Написан на ASP.NET
+http://localhost:8080/swagger/
 
-Orders(./Services/Orders) - REST Сервис для работы с ордерами
-http://localhost:8080/swagger/index.html
+Users(./Services/Users) - REST Сервис для работы с пользователями. Написан на ASP.NET
+http://localhost:8082/swagger/
 
-Rate(./Services/Rate) - gRPC Сервис для работой с котировками валюты
-http://localhost:8081
-Для тестирования нужно прописать dotnet run, находясь в /Services/Rate/gRPC_Client
+Portfolio(./Services/Portfolio) - REST Сервис для работы с портфолиями. Написан на Express.js
+http://localhost:8083/swagger/
+
+OrdersWorker - WorkerService, обрабатывающий новые заказы.
 
 Adminer - http://localhost:8088
 
-Брокер сообщений(./MessageBroker) - Доклад Kafka
+<img src="images/scheme.png" width="600">

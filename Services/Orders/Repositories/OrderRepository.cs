@@ -1,6 +1,6 @@
 using System.Net.Mime;
 using Orders.Repositories;
-using Orders.Model;
+using Orders.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,20 +15,20 @@ namespace Orders.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Order>> GerOrders(int limit) 
+        public async Task<IEnumerable<Order>> GetOrders(int limit) 
         {
-            var orders = await _dbContext.Orders.Take(limit).ToListAsync();
+            var orders = await _dbContext.Orders.Where(x => x.Isdeleted == false).Take(limit).ToListAsync();
             return orders;
         }
 
         public async Task<Order> GetOrderById(int id) 
         {
-            return await _dbContext.Orders.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await _dbContext.Orders.Where(x => x.Id == id && x.Isdeleted == false).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersByOwnerGuid(string ownerGuid) 
+        public async Task<IEnumerable<Order>> GetOrdersByUserId(int userid) 
         {
-            return await _dbContext.Orders.Where(x=>x.OwnerGuid == ownerGuid).ToListAsync();
+            return await _dbContext.Orders.Where(x=>x.Userid == userid && x.Isdeleted == false).ToListAsync();
         }
 
         public async Task CreateOrder(Order order)
@@ -36,18 +36,25 @@ namespace Orders.Repositories
             _dbContext.Orders.Add(order);
             await _dbContext.SaveChangesAsync();
         }
-        public async Task UpdateOrder(int id, Order order) 
+        public async Task<Order> UpdateOrder(Order order) 
         {
-            order.Id = id;
-            _dbContext.Orders.Update(order);
+            var updOrder = await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == order.Id && x.Isdeleted == false); 
+            if (updOrder == null)
+            {
+                return null;
+            }
+            updOrder.ChangeData(order);
+            _dbContext.Orders.Update(updOrder);
             await _dbContext.SaveChangesAsync();
+            return updOrder;
         }
         public async Task<Order> DeleteOrder(int id) 
         {
             var order = await _dbContext.Orders.Where(x=>x.Id == id).FirstOrDefaultAsync();
             if(order != null) 
             {
-                _dbContext.Orders.Remove(order);
+                order.Isdeleted = true;
+                _dbContext.Update(order);
                 await _dbContext.SaveChangesAsync();
             }
             return order;
@@ -55,15 +62,15 @@ namespace Orders.Repositories
 
         public async Task<int> GetOrdersCount() 
         {
-            return await _dbContext.Orders.CountAsync();
+            return await _dbContext.Orders.CountAsync(x => x.Isdeleted == false);
         }
 
         public async Task<IEnumerable<Order>> GetMatch(OrdersFilter filter) 
         {
-            var orders = await _dbContext.Orders.Where(x =>(x.BaseCurrency == filter.FirstCurrency & 
-                                                            x.QuoteCurrency == filter.SecondCurrency) |
-                                                           (x.QuoteCurrency == filter.FirstCurrency &
-                                                            x.BaseCurrency == filter.SecondCurrency))
+            var orders = await _dbContext.Orders.Where(x =>(x.Basecurrencyid == filter.FirstCurrencyId & 
+                                                            x.Quotecurrencyid == filter.SecondCurrencyId) |
+                                                           (x.Quotecurrencyid == filter.FirstCurrencyId &
+                                                            x.Basecurrencyid == filter.SecondCurrencyId))
                                                 .Take(filter.Limit)
                                                 .ToListAsync();
             return orders;

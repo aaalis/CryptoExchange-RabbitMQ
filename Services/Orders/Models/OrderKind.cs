@@ -1,7 +1,7 @@
 using NpgsqlTypes;
 using System.Text.Json.Serialization;
 
-namespace Orders.Model
+namespace Orders.Models
 {
     [PgName("orderskind")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

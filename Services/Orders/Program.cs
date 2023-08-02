@@ -2,8 +2,10 @@ using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore;
 using Npgsql;
-using Orders.Model;
+using Orders.Models;
+using Orders.Rabbit;
 using Orders.Repositories;
+using Orders.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<OrdersCurrency>("OrdersCurrency");
 Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<OrderKind>("OrdersKind");
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IRabbitClient, RabbitClient>();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<OrderDbContext>
 (

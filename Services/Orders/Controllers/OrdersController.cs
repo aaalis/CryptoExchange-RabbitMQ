@@ -1,33 +1,29 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Orders.Model;
+using Orders.Models;
 using System.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Orders.Repositories;
+using Orders.Services;
 
 namespace Orders.Controllers
 {
     [ApiController]
-    [Route("api/v1/")]
+    [Route("OrdersAPI/")]
     public class OrdersController : ControllerBase
     {
         private readonly ILogger<OrdersController> _logger;
-        private IOrderRepository _orderRepository;
+        private readonly IOrderService _orderService;
 
-        public OrdersController(ILogger<OrdersController> logger, IOrderRepository orderRepository)
+        public OrdersController(ILogger<OrdersController> logger, IOrderService orderService)
         {
             _logger = logger;
-            _orderRepository = orderRepository;
+            _orderService = orderService;
         }
         
         [HttpGet("[action]/{limit}")]
         [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int limit) 
         {
-            var orders = await _orderRepository.GerOrders(limit);
+            var orders = await _orderService.GetOrders(limit);
             _logger.LogInformation($"{orders.Count()} orders shown");
             return Ok(orders);
         }
@@ -37,7 +33,7 @@ namespace Orders.Controllers
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult<object>> GetOrderById(int id) 
         {
-            var order = await _orderRepository.GetOrderById(id);
+            var order = await _orderService.GetOrderById(id);
             if (order == null)
             {
                 _logger.LogError($"Order with id:{id} not found");
@@ -46,27 +42,34 @@ namespace Orders.Controllers
             return Ok(order);
         }
 
-        [HttpGet("[action]/{ownerGuid}")]
+        [HttpGet("[action]/{userid}")]
         [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByOwnerGuid(string ownerGuid) 
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUserId(int userid) 
         {
-            var orders = await _orderRepository.GetOrdersByOwnerGuid(ownerGuid);
+            var orders = await _orderService.GetOrdersByUserId(userid);
             if (!orders.Any())
             {
-                _logger.LogInformation($"Order with ownerGuid:{ownerGuid} not found");
-                return NotFound($"Order with ownerGuid:{ownerGuid} not found");
+                _logger.LogInformation($"Order with userid:{userid} not found");
+                return NotFound($"Order with userid:{userid} not found");
             }
             return Ok(orders);
         }
 
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Order>> CreateOrder([FromBody] Order order) 
+        public async Task<ActionResult<Order>> CreateOrder([FromBody] OrderDto orderDto)
         {
-            await _orderRepository.CreateOrder(order);
+            string message = String.Empty;
+            if (ValidationNewOrder(orderDto, out message))
+            {
+                _logger.LogInformation($"Validation error: {message}");
+                return ValidationProblem($"{message}");
+            }
+            
+            await _orderService.CreateOrder(orderDto);
 
-            return CreatedAtAction(nameof(GetOrderById), new {id = order.Id}, order);
+            return CreatedAtAction(nameof(GetOrderById), new {id = orderDto.Id}, orderDto);
         }
 
         [HttpGet("[action]")]
@@ -80,7 +83,7 @@ namespace Orders.Controllers
                 return ValidationProblem($"ValidationProblem, limit:{filter.Limit}");
             }
             
-            var orders = await _orderRepository.GetMatch(filter);
+            var orders = await _orderService.GetMatchingOrders(filter);
             
             if (!orders.Any())
             {
@@ -90,11 +93,11 @@ namespace Orders.Controllers
             return Ok(orders);
         }
 
-        [HttpPut("[action]/{id}")]
+        [HttpPut("[action]")]
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Order>> UpdateOrder(int id, [FromBody] Order order) 
+        public async Task<ActionResult<Order>> UpdateOrder([FromBody] Order order) 
         {
-            await _orderRepository.UpdateOrder(id, order);
+            await _orderService.UpdateOrder(order);
 
             return AcceptedAtAction(nameof(GetOrderById), new {id = order.Id}, order);
         }
@@ -103,13 +106,31 @@ namespace Orders.Controllers
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<Order>> DeleteOrder(int id) 
         {
-            var order = await _orderRepository.DeleteOrder(id);
+            var order = await _orderService.DeleteOrder(id);
             if (order == null)
             {
                 _logger.LogInformation($"Not found order with id:{id}");
                 return NotFound($"Not found order with id:{id}");
             }
             return Ok(order);
+        }
+            
+        /// <summary>
+        /// Проверка нового ордена
+        /// </summary>
+        /// <param name="orderDto"></param>
+        /// <param name="message"></param>
+        /// <returns>true - есть ошибки валидации, false - нет ошибок валидации</returns>
+        private bool ValidationNewOrder(OrderDto orderDto, out string message)
+        { 
+            if (orderDto.Basecurrencyid == orderDto.Quotecurrencyid)
+            {
+                message = "Basecurrencyid must not be equal to quotocurrencyid";
+                return true;
+            } 
+
+            message = String.Empty;
+            return false;
         }
     }
 }

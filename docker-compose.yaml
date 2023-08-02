@@ -28,19 +28,19 @@ services:
     ports:
       - 8080:80
 
-  rate:
-    image: ${DOCKER_REGISTRY-}rategrpc
-    container_name: rate
-    build:
-      context: .
-      dockerfile: Services/Rate/gRPC_Server/Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings:DefaultConnection=Server=db;Port=5432;Username=postgres;Password=postgres;Database=DB"
-    depends_on:
-      - db
-    ports:
-      - 8081:80
+  # rate:
+  #   image: ${DOCKER_REGISTRY-}rategrpc
+  #   container_name: rate
+  #   build:
+  #     context: .
+  #     dockerfile: Services/Rate/gRPC_Server/Dockerfile
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - "ConnectionStrings:DefaultConnection=Server=db;Port=5432;Username=postgres;Password=postgres;Database=DB"
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - 8081:80
 
   users:
     image: ${DOCKER_REGISTRY-}users
@@ -69,6 +69,16 @@ services:
     ports:
      - 8083:8083
 
+  orderworker:
+    image: ${DOCKER_REGISTRY-}orderworker
+    container_name: orderworker
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Services/OrdersWorkerService/Dockerfile
+    depends_on:
+      - mbroker
+
   adminer:
     image: adminer:4.8.1
     restart: unless-stopped
@@ -76,17 +86,16 @@ services:
       - 8088:8080
 
   mbroker:
-   image: rabbitmq:3.11.9-management
-   restart: unless-stopped
-   container_name: mbroker
-   ports:
-     - 4369:4369
-     - 5671:5671
-     - 25672:25672
+    image: ${DOCKER_REGISTRY-}mbroker
+    build:
+      context: ./custom-rabbitmq-image
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: mbroker
+    ports:
      - 5672:5672
      - 15672:15672
-   environment:
-     AMQP_URL: 'amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+    
 
 volumes:
   postgres_data:

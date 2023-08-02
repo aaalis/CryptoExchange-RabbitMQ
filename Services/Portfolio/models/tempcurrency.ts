@@ -4,7 +4,7 @@ import type { Asset, AssetId } from './asset';
 
 export interface TempcurrencyAttributes {
   id: number;
-  currency: string;
+  name: string;
 }
 
 export type TempcurrencyPk = "id";
@@ -14,7 +14,7 @@ export type TempcurrencyCreationAttributes = Optional<TempcurrencyAttributes, Te
 
 export class Tempcurrency extends Model<TempcurrencyAttributes, TempcurrencyCreationAttributes> implements TempcurrencyAttributes {
   id!: number;
-  currency!: string;
+  name!: string;
 
   // Tempcurrency hasMany Asset via currencyId
   assets!: Asset[];
@@ -37,18 +37,18 @@ export class Tempcurrency extends Model<TempcurrencyAttributes, TempcurrencyCrea
       allowNull: false,
       primaryKey: true
     },
-    currency: {
+    name: {
       type: DataTypes.STRING(50),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'tempcurrency',
+    tableName: 'currencies',
     schema: 'public',
     timestamps: false,
     indexes: [
       {
-        name: "tempcurrency_pkey",
+        name: "currencies_pkey",
         unique: true,
         fields: [
           { name: "id" },

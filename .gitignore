@@ -354,3 +354,6 @@ MigrationBackup/
 /.dbseed
 
 dist/
+/.idea
+/Concept
+/MessageBroker

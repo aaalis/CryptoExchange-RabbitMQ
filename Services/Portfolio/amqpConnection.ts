@@ -33,6 +33,26 @@ class AmqpConnection {
                     });
                 })
 
+                channel.assertQueue('addAsset.queue', {durable: false}, function(err: any, _ok: any) {
+                    if (err) {
+                        return
+                    }
+                    channel.consume(`addAsset.queue`, function(msg: any) {
+                        console.log('[x] Received asset:%s', msg.content.toString());
+                        portfolioService.addAssets(JSON.parse(msg.content));
+                    });
+                })
+
+                channel.assertQueue('removeAsset.queue', {durable: false}, function(err: any, _ok: any) {
+                    if (err) {
+                        return
+                    }
+                    channel.consume(`removeAsset.queue`, function(msg: any) {
+                        console.log('[x] Received asset:%s', msg.content.toString());
+                        portfolioService.removeAssets(JSON.parse(msg.content));
+                    });
+                })
+
                 console.log("Waiting for messages.");
             });
         });
