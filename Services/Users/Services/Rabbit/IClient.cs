@@ -1,4 +1,4 @@
-namespace Rabbit
+namespace Users.Services.Rabbit
 {
     public interface IClient
     {

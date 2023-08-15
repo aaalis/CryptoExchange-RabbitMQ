@@ -38,8 +38,10 @@ namespace Users.Controllers
             UserDto user = await _userService.GetUserById(id);
             if (user == null)
             {
+                _logger.LogInformation($"Not found user with id:{id}");
                 return NotFound($"User with id:{id} not found");
             }
+            _logger.LogInformation($"User with id:{id} was received");
             return Ok(user);
         }
 
@@ -49,21 +51,23 @@ namespace Users.Controllers
             UserDto userDto = await _userService.GetUserByLogin(login);
             if (userDto == null)
             {
+                _logger.LogInformation($"Not found user with login:{login}");
                 return NotFound($"User with login:{login} not found");
             }
+            _logger.LogInformation($"User with login:{login} was received");
             return Ok(userDto);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersById([FromQuery(Name = "usersId")] List<int> ids)
-        {
-            var users = await _userService.GetUsersById(ids);
-            if (!users.Any())
-            {
-                return NotFound("Users not found");
-            }
-            return Ok(users);
-        }
+        // [HttpGet]
+        // public async Task<ActionResult<IEnumerable<UserDto>>> GetUsersById([FromQuery(Name = "usersId")] List<int> ids)
+        // {
+        //     var users = await _userService.GetUsersById(ids);
+        //     if (!users.Any())
+        //     {
+        //         return NotFound("Users not found");
+        //     }
+        //     return Ok(users);
+        // }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetFullFieldUser(int id)
@@ -71,28 +75,44 @@ namespace Users.Controllers
             User user = await _userService.GetFullFieldsUser(id);
             if (user == null)
             {
+                _logger.LogInformation($"Not found user with id:{id}");
                 return NotFound($"User with id:{id} not found");
             }
+            _logger.LogInformation($"User with id:{id} was received");
             return Ok(user);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<UserDto>> DeleteUser(int id)
         {
-            return Ok(await _userService.DeleteUser(id));
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult> DeleteUsers([FromBody] IEnumerable<int> ids)
-        {
-            await _userService.DeleteUsers(ids);
+            var user = await _userService.DeleteUser(id);
+            if (user == null)
+            {
+                _logger.LogInformation($"Not found user with id:{id}");
+                return NotFound($"Not found user with id:{id}");
+            }
+            _logger.LogInformation($"User with id:{id} was deleted");
             return Ok();
         }
+
+        // [HttpDelete]
+        // public async Task<ActionResult> DeleteUsers([FromBody] IEnumerable<int> ids)
+        // {
+        //     await _userService.DeleteUsers(ids);
+        //     return Ok();
+        // }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDto>> UpdateUser(int id, [FromBody] User user)
         {
-            return Ok(await _userService.UpdateUser(id, user));
+            var updUser = await _userService.UpdateUser(id, user);
+            if (updUser == null) 
+            {
+                _logger.LogInformation($"Not found user with id:{id}");
+                return NotFound($"Not found user with id:{id}");
+            }
+            _logger.LogInformation($"User with id:{id} was updated");
+            return Ok(updUser);
         }
 
         [HttpPatch("{id}&{name}")]

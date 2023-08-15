@@ -52,6 +52,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:DefaultConnection=Server=db;Port=5432;Username=postgres;Password=postgres;Database=DB"
+      - "Redis:Connection=redis_cache:6379"
     depends_on:
       - db
     ports:

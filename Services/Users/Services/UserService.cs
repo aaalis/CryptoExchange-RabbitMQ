@@ -2,7 +2,8 @@ using Users.Model;
 using Users.Repositories;
 using Users.Model.Dto;
 using System.Linq;
-using Rabbit;
+using Users.Services.Cache;
+using Users.Services.Rabbit;
 
 namespace Users.Services
 {
@@ -10,11 +11,13 @@ namespace Users.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IClient _rabbitClient;
+        private readonly ICacheService _cacheService;
 
-        public UserService(IUserRepository userRepository, IClient rabbitClient)
+        public UserService(IUserRepository userRepository, IClient rabbitClient, ICacheService cacheService)
         {
             _userRepository = userRepository;
             _rabbitClient = rabbitClient;
+            _cacheService = cacheService;
         }
 
         public async Task<UserDto> CreateUser(User user)
@@ -35,18 +38,36 @@ namespace Users.Services
 
         public async Task<UserDto> GetUserByLogin(string login)
         {
-            User user = await _userRepository.GetUserByLogin(login);
-            return ConvertUser(user);
+            var key = "getOrderByLogin" + login;
+            
+            var cache = GetCache<UserDto>(key);
+            if (cache != null)
+            {
+                return cache;
+            }
+            
+            UserDto user = ConvertUser(await _userRepository.GetUserByLogin(login));
+
+            AddCache(key, user);
+            
+            return user;
         }
 
-        public async Task<UserDto> GetUserById(int id) 
+        public async Task<UserDto> GetUserById(int id)
         {
-            User user = await _userRepository.GetUserById(id);
-            if (user == null)
+            var key = "getUserById" + id;
+
+            var cache = GetCache<UserDto>(key);
+            if (cache != null)
             {
-                return null;
+                return cache;
             }
-            return ConvertUser(user);
+            
+            UserDto user = ConvertUser(await _userRepository.GetUserById(id));
+
+            AddCache(key, user);
+            
+            return user;
         }
 
         public async Task<IEnumerable<UserDto>> GetUsersById(IEnumerable<int> ids)
@@ -59,13 +80,26 @@ namespace Users.Services
 
         public async Task<User> GetFullFieldsUser(int id)
         {
-            return await _userRepository.GetUserById(id);
+            var key = "getFullFieldsUser" + id;
+
+            var cache = GetCache<User>(key);
+            if (cache != null)
+            {
+                return cache;
+            }
+            
+            var user = await _userRepository.GetUserById(id);
+
+            AddCache(key, user);
+
+            return user;
         }
 
         public async Task<UserDto> DeleteUser(int id)
         {
             User user = await _userRepository.DeleteUser(id);
             DeletePortfolio(id);
+            _cacheService.RemoveData("getUserById" + id);
             return ConvertUser(user);
         }
 
@@ -103,6 +137,22 @@ namespace Users.Services
         private void DeletePortfolio(int id) 
         {
             _rabbitClient.DeletePortfolio(id);
+        }
+        private T? GetCache<T>(string key)
+        {
+            var cacheData = _cacheService.GetData<T>(key);
+            if (cacheData != null)
+            {
+                return cacheData;
+            }
+
+            return default;
+        }
+
+        private bool AddCache<T>(string key, T value, int liveTimeInSeconds = 30)
+        {
+            var expTime = DateTimeOffset.Now.AddSeconds(liveTimeInSeconds);
+            return _cacheService.SetData(key, value, expTime);
         }
     }
 }

@@ -4,7 +4,8 @@ using Npgsql;
 using Users.Model;
 using Users.Repositories;
 using Users.Services;
-using Rabbit;
+using Users.Services.Cache;
+using Users.Services.Rabbit;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IClient, RabbitClient>();
 

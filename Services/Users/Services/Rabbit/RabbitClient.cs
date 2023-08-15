@@ -1,7 +1,7 @@
 using System.Text;
 using RabbitMQ.Client;
 
-namespace Rabbit
+namespace Users.Services.Rabbit
 {
     public class RabbitClient : IClient
     {
