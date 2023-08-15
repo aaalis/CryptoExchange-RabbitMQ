@@ -6,6 +6,7 @@ using Orders.Models;
 using Orders.Rabbit;
 using Orders.Repositories;
 using Orders.Services;
+using Orders.Services.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ Npgsql.NpgsqlConnection.GlobalTypeMapper.MapEnum<OrderKind>("OrdersKind");
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IRabbitClient, RabbitClient>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<OrderDbContext>
 (
@@ -34,7 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// /app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

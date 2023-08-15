@@ -19,12 +19,12 @@ namespace Orders.Controllers
             _orderService = orderService;
         }
         
-        [HttpGet("[action]/{limit}")]
+        [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<Order>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int limit) 
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders() 
         {
-            var orders = await _orderService.GetOrders(limit);
-            _logger.LogInformation($"{orders.Count()} orders shown");
+            var orders = await _orderService.GetOrders();
+            _logger.LogInformation($"{orders.Count()} orders was received");
             return Ok(orders);
         }
 
@@ -39,6 +39,7 @@ namespace Orders.Controllers
                 _logger.LogError($"Order with id:{id} not found");
                 return NotFound($"Order with id:{id} not found");      
             }
+            _logger.LogInformation($"Order with id:{id} was received");
             return Ok(order);
         }
 
@@ -53,6 +54,7 @@ namespace Orders.Controllers
                 _logger.LogInformation($"Order with userid:{userid} not found");
                 return NotFound($"Order with userid:{userid} not found");
             }
+            _logger.LogInformation($"Orders with UserId:{userid} was received");
             return Ok(orders);
         }
 
@@ -90,16 +92,24 @@ namespace Orders.Controllers
                 _logger.LogInformation($"Matching orders not found with filter:{filter.ToString()}");
                 return NotFound($"Matching orders not found with filter:{filter.ToString()}");
             }
+            _logger.LogInformation($"{orders.Count()} was received");
             return Ok(orders);
         }
 
-        [HttpPut("[action]")]
+        [HttpPut("[action]/{id}")]
         [ProducesResponseType(typeof(Order), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<Order>> UpdateOrder([FromBody] Order order) 
+        public async Task<ActionResult<Order>> UpdateOrder([FromBody] Order order, int id) 
         {
-            await _orderService.UpdateOrder(order);
+            string message = String.Empty;
+            if (ValidationNewOrder(order, out message))
+            {
+                _logger.LogInformation($"Validation error: {message}");
+                return ValidationProblem($"{message}");
+            }
+            
+            await _orderService.UpdateOrder(order, id);
 
-            return AcceptedAtAction(nameof(GetOrderById), new {id = order.Id}, order);
+            return AcceptedAtAction(nameof(GetOrderById), new {id}, order);
         }
 
         [HttpDelete("[action]/{id}")]
@@ -112,6 +122,7 @@ namespace Orders.Controllers
                 _logger.LogInformation($"Not found order with id:{id}");
                 return NotFound($"Not found order with id:{id}");
             }
+            _logger.LogInformation($"Order with id:{id} was deleted");
             return Ok(order);
         }
             
@@ -121,7 +132,7 @@ namespace Orders.Controllers
         /// <param name="orderDto"></param>
         /// <param name="message"></param>
         /// <returns>true - есть ошибки валидации, false - нет ошибок валидации</returns>
-        private bool ValidationNewOrder(OrderDto orderDto, out string message)
+        private bool ValidationNewOrder(Order orderDto, out string message)
         { 
             if (orderDto.Basecurrencyid == orderDto.Quotecurrencyid)
             {

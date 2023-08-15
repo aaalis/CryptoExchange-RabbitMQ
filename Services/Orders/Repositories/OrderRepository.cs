@@ -15,9 +15,9 @@ namespace Orders.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Order>> GetOrders(int limit) 
+        public async Task<IEnumerable<Order>> GetOrders() 
         {
-            var orders = await _dbContext.Orders.Where(x => x.Isdeleted == false).Take(limit).ToListAsync();
+            var orders = await _dbContext.Orders.Where(x => x.Isdeleted == false).ToListAsync();
             return orders;
         }
 
@@ -31,14 +31,16 @@ namespace Orders.Repositories
             return await _dbContext.Orders.Where(x=>x.Userid == userid && x.Isdeleted == false).ToListAsync();
         }
 
-        public async Task CreateOrder(Order order)
+        public async Task<Order> CreateOrder(Order order)
         {
-            _dbContext.Orders.Add(order);
+            var addedOrder = await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
+
+            return addedOrder.Entity;
         }
-        public async Task<Order> UpdateOrder(Order order) 
+        public async Task<Order> UpdateOrder(Order order, int id) 
         {
-            var updOrder = await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == order.Id && x.Isdeleted == false); 
+            var updOrder = await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == id && x.Isdeleted == false); 
             if (updOrder == null)
             {
                 return null;
